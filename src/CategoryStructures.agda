@@ -3,6 +3,9 @@ module CategoryStructures where
 open import Function
 open import Level
 open import Relation.Binary.PropositionalEquality
+open import Data.Float
+open import Agda.Builtin.Float
+
 
 record Functor {α} (F : Set α → Set α) : Set (suc α) where
   constructor mkFunctor
@@ -49,6 +52,12 @@ record Monad {α} (F : Set α → Set α) {{fun : Functor F}} {{app : Applicativ
   join : ∀ {A : Set α} → F (F A) → F A
   join f = f >>= id
 open Monad {{...}} public
+
+record ProvabilityMonad (F : Set → Set) {{fun : Functor F}} {{app : Applicative F}} {{m : Monad F}} : Set₁ where
+  constructor mkProvabilityMonad
+  field
+    choose : {A : Set} → Float → F A → F A → F A
+open ProvabilityMonad {{...}} public
 
 record VerifiedFunctor {α} (F : Set α → Set α) {{fun : Functor F}} : Set (suc α) where
   constructor mkVerifiedFunctor

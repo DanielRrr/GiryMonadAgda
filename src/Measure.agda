@@ -7,6 +7,7 @@ open Relation.Binary.PropositionalEquality.≡-Reasoning
 open import Data.Nat
 open import Function
 open import Data.Product
+open import Data.Sum
 
 data Measure {α} (A : Set α) : Set α  where
   measure : ((A → Float) → Float) → Measure A
@@ -74,3 +75,18 @@ multMeasureFloat nu₁ nu₂ = operationMeasure primFloatTimes nu₁ nu₂
 
 chooseFun : ∀ {A : Set} → Float → Measure A → Measure A → Measure A
 chooseFun num (measure x) (measure x₁) = measureBind (measure x) λ x → measureBind ((measure x₁)) λ y → measure λ g → num
+
+π₁ : ∀ {α β} {A : Set α} {B : Set β} → A × B → A
+π₁ (a , b) = a
+
+π₂ : ∀ {α β} {A : Set α} {B : Set β} → A × B → B
+π₂ (a , b) = b
+
+fstMeasure : ∀ {α} {A B : Set α} → Measure (A × B) → Measure A
+fstMeasure nu = apMeasure (pureMeasure π₁) nu 
+
+sndMeasure : ∀ {α} {A B : Set α} → Measure (A × B) → Measure B
+sndMeasure nu = apMeasure (pureMeasure π₂) nu
+
+pairMeasure : ∀ {α} {A B : Set α} → Measure (A × B) → Measure A × Measure B
+pairMeasure nu = fstMeasure nu , sndMeasure nu
